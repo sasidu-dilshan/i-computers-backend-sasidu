@@ -7,19 +7,19 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import orderRouter from './routes/orderRouter.js'
 dotenv.config()
+import dns from "node:dns";
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const mongoUri = process.env.MONGO_URI
 
-mongoose.connect(mongoUri).then(
-    ()=>{
-        console.log("Connected to MongoDB")
-    }
-).catch(
-    ()=>{
-        console.log("Error connecting to MongoDB")
-    }
-)
-
+mongoose.connect(mongoUri)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err.message);
+  });
 
 const app = express()
 
