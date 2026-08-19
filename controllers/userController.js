@@ -476,3 +476,47 @@ export async function resetPassword(req,res){
     }
 
 }
+
+export async function getUserCart(req, res) {
+    if (req.user == null) {
+        return res.status(401).json({ message: "You are not logged in" });
+    }
+
+    try {
+        const user = await User.findOne({ email: req.user.email }).populate("cart.product");
+
+        if (user == null) {
+            return res.status(404).json({ message: "User does not exist" });
+        }
+
+        res.json({ cart: user.cart || [] });
+    } catch (error) {
+        console.error("Error getting user cart:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function updateUserCart(req, res) {
+    if (req.user == null) {
+        return res.status(401).json({ message: "You are not logged in" });
+    }
+
+    try {
+        const cartData = req.body.cart;
+
+        const user = await User.findOneAndUpdate(
+            { email: req.user.email },
+            { cart: cartData },
+            { new: true }
+        ).populate("cart.product");
+
+        if (user == null) {
+            return res.status(404).json({ message: "User does not exist" });
+        }
+
+        res.json({ message: "Cart updated successfully", cart: user.cart });
+    } catch (error) {
+        console.error("Error updating user cart:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

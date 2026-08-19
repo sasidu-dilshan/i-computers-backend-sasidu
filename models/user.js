@@ -38,8 +38,19 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true,
         default : "/images/default-profile.png"
+    },
+    cart: [
+    {
+        product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product"
+        },
+        qty: {
+        type: Number,
+        default: 1
+        }
     }
-
+]
 })
 
 const User = mongoose.model("User" , userSchema)
